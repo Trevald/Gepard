@@ -53,10 +53,6 @@ export default {
 
         showAnswer() {
             this.state = "show-answer"
-
-            setTimeout(() => {
-                this.close()
-            }, 5000)
         },
 
         close() {
@@ -187,7 +183,7 @@ export default {
     justify-content: center;
     align-items: center;
 
-    padding: 8vw 8vw 12vw 8vw;
+    padding: 8vw 8vw 8vw 8vw;
     border-radius: 2vw;
     backface-visibility: hidden;
 
@@ -198,7 +194,7 @@ export default {
 .points {
     position: relative;
 
-    font-size: 12vw;
+    font-size: 24vw;
     font-weight: 800;
 }
 
@@ -207,6 +203,7 @@ export default {
     display: grid;
     font-size: 5vw;
     place-content: center;
+    padding-bottom: 8vw;
 
     background-color: var(--color-surface-500);
     background-image: linear-gradient(-10deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
