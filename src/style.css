@@ -1,0 +1,40 @@
+@import "tailwindcss";
+@source "./../src/**/*.vue";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-blue-700);
+    color: white;
+}
+
+.categories {
+    display: flex;
+    width: 100vw;
+    height: 100dvh;
+}
+
+.categories li {
+    flex: 1 1 auto;
+}
+
+.category > h2,
+.category > ul > li {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    text-align: center;
+    height: calc(100vh / 6);
+    font-size: 5vw;
+    border: 2px solid var(--color-blue-950);
+}
+
+.category > h2 {
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-blue-800);
+}

@@ -1,0 +1,26 @@
+---
+categories:
+    - name: Geografi
+      questions:
+          - question: Sveriges högsta berg
+            answer: Vad är Kebnekaise?
+          - question: Sveriges längsta flod
+            answer: Vad är Klarälven?
+          - question: Sveriges största sjö
+            answer: Vad är Vänern?
+          - question: Sveriges största ö
+            answer: Vad är Gotland?
+          - question: Sveriges största stad
+            answer: Vad är Stockholm?
+    - name: Historia
+      questions:
+          - question: Sveriges första kända kung
+            answer: Vem är Olof Skötkonung?
+          - question: Sveriges första kvinnliga regent
+            answer: Vem är Margareta?
+          - question: Sveriges första riksdag
+            answer: Vad är Alsnö stadga?
+          - question: Sveriges första universitet
+            answer: Vad är Uppsala universitet?
+          - question: Sveriges första Nobelpristagare
+            answer: Vem är Selma Lagerlöf?
