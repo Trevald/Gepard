@@ -1,8 +1,11 @@
 <template>
-    <div class="question" @click="handleClick()">
-        <div class="card" :class="classList" :style="styleList" ref="card" v-if="!question.answered">
-            <h2 class="points front">{{ question.points }}</h2>
-            <p class="question back">{{ question.question }}</p>
+    <div class="container" ref="container">
+        <div class="card-wrapper" :class="classList" :style="wrapperStyleList" ref="wrapper" v-if="!answered">
+            <div class="card" :style="cardStyleList" ref="card" @click="handleClick()">
+                <p class="points">{{ question.points }}</p>
+                <p class="question">{{ question.question }}</p>
+                <p class="answer">{{ question.answer }}</p>
+            </div>
         </div>
     </div>
 </template>
@@ -13,138 +16,228 @@ export default {
         question: Object
     },
 
+    emits: ["answered"],
+
     data() {
         return {
+            answered: false,
+            scaleUp: 1,
+            scaleDown: 1,
             show: false,
-            styleList: {}
+            cardStyleList: {},
+            wrapperStyleList: {},
+            state: "show-points"
         }
     },
 
     computed: {
         classList() {
-            return {
-                show: this.show
-            }
+            return this.state
         }
     },
 
     methods: {
         handleClick() {
-            if (this.question.answered) {
-                return
+            switch (this.state) {
+                case "show-points":
+                    this.selectQuestion()
+                    break
+                case "show-question":
+                    this.showAnswer()
+                    break
+                case "show-answer":
+                    this.close()
+                    break
             }
+        },
 
-            if (this.show) {
-                this.question.answered = true
-                return
-            }
-
-            const card = this.$refs.card
-            const rect = card.getBoundingClientRect()
-
-            this.styleList = {
-                position: "fixed",
-                zIndex: 20,
-                top: rect.top + "px",
-                left: rect.left + "px",
-                // bottom: rect.bottom + "px",
-                // right: rect.right + "px",
-                width: rect.width + "px",
-                height: rect.height + "px"
-            }
+        showAnswer() {
+            this.state = "show-answer"
 
             setTimeout(() => {
-                this.styleList = {
-                    position: "fixed",
-                    zIndex: 20,
-                    top: 0 + "px",
-                    left: 0 + "px",
-                    // bottom: 0 + "px",
-                    // right: 0 + "px",
-                    width: document.body.clientWidth + "px",
-                    height: document.body.clientHeight + "px",
-                    transition: "all 250ms linear",
-                    transform: "scale(2)"
-                    // transform: "rotateY(180deg)"
-                }
-            }, 1)
+                this.close()
+            }, 5000)
+        },
 
-            this.show = true
+        close() {
+            this.state = "close"
+
+            setTimeout(() => {
+                this.answered = true
+            }, 500)
+        },
+
+        selectQuestion() {
+            this.state = "select-question"
+            this.wrapperStyleList = {
+                transform: `scale(${this.scaleDown})`
+            }
+            setTimeout(() => {
+                this.showQuestion()
+            }, 250)
+        },
+
+        showQuestion() {
+            this.state = "show-question"
+            this.wrapperStyleList = {
+                transform: "scale(1)"
+            }
+        }
+    },
+
+    mounted() {
+        const container = this.$refs.container.getBoundingClientRect()
+        const wrapper = this.$refs.wrapper.getBoundingClientRect()
+        const card = this.$refs.card.getBoundingClientRect()
+
+        this.scaleDown = container.height / wrapper.height
+        this.scaleUp = wrapper.height / container.height
+
+        const width = container.width * this.scaleUp
+        const top = container.top - wrapper.height / 2 + container.height / 2
+        const left = container.left - width / 2 + container.width / 2
+        console.log(left)
+        // 100 * 0.16 = 16
+        // 16666666 * 6.000075 =
+
+        console.log(left)
+
+        this.wrapperStyleList = {
+            top: `${top}px`,
+            left: `${left}px`,
+            width: `${width}px`,
+            transform: `scale(${this.scaleDown})`
         }
     }
 }
 </script>
 
 <style scoped>
-.question {
-    flex: 1 1 auto;
-    position: relative;
-    display: flex;
-    justify-content: stretch;
-    align-items: stretch;
-}
-
-.card {
+.container {
     flex: 1 1 auto;
     display: flex;
     justify-content: stretch;
     align-items: stretch;
-    cursor: pointer;
+    padding: 1vw;
 }
-/*
 
-.card {
-    perspective: 1000px;
-    transform-style: preserve-3d;}
-
-.card.show {
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
+.card-wrapper {
+    position: fixed;
     z-index: 10;
-    transform: rotateY(180deg);
-    transition: all 0.5s;
-}
-*/
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
 
-.front,
-.back {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    transform-origin: center;
+}
+
+.card-wrapper.select-question {
+    z-index: 30;
+    transition: all 0.25s;
+}
+
+.card-wrapper.show-answer,
+.card-wrapper.show-question {
+    z-index: 30;
+    transition: all 0.25s;
+    background-color: var(--color-surface-100);
+}
+
+.card-wrapper.close {
+    z-index: 30;
+    transition: all 500ms;
+}
+
+.card {
+    position: absolute;
+    inset: 80px;
+
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+
+    box-shadow: 0 1vw 2vw rgba(0, 0, 0, 0.05);
+    transform-style: preserve-3d;
+    transition: rotate 750ms ease 350ms;
+}
+
+.card-wrapper.show-question .card {
+    rotate: y 180deg;
+}
+
+.card-wrapper.show-answer .card {
+    rotate: y 360deg;
+    transition: rotate 750ms ease;
+}
+
+.card-wrapper.close .card {
+    transform: translateY(-125vh);
+    transition: transform 500ms;
+}
+
+.card > * {
+    position: absolute;
+    inset: 0;
     flex: 1 1 auto;
-    display: grid;
-    place-content: center;
-    z-index: 15;
-    background-color: var(--color-blue-600);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 8vw 8vw 12vw 8vw;
+    border-radius: 2vw;
+    backface-visibility: hidden;
+
+    background-color: var(--color-surface-500);
+    background-image: linear-gradient(-10deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
-.card .back,
-.card.show .front {
+.points {
+    position: relative;
+
+    font-size: 12vw;
+    font-weight: 800;
+}
+
+.answer,
+.question {
+    display: grid;
+    font-size: 5vw;
+    place-content: center;
+
+    background-color: var(--color-surface-500);
+    background-image: linear-gradient(-10deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.question {
+    rotate: y 180deg;
+    background-color: var(--color-surface-400);
+}
+
+.card > *::after {
+    content: "";
+    position: absolute;
+    inset: 3vw;
+    border: 0.4vw solid rgba(255, 255, 255, 0.4);
+    border-radius: 1vw;
+}
+
+.answer {
+    opacity: 0;
+    background-color: #17961b;
+    transition: none;
+}
+
+.card-wrapper.close .points,
+.card-wrapper.show-answer .points {
     display: none;
 }
 
-.card .back {
-    font-size: 3vw;
+.card-wrapper.close .answer,
+.card-wrapper.show-answer .answer {
+    opacity: 1;
 }
-
-.card.show .back {
-    display: block;
-}
-
-/*
-.front,
-.back {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-content: center;
-    backface-visibility: hidden;
-    z-index: 15;
-    background-color: var(--color-blue-600);
-}
-
-.back {
-    z-index: 20;
-    background-color: var(--color-blue-600);
-    rotate: y 180deg;
-}
-    */
 </style>
