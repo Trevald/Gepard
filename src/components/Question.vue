@@ -2,14 +2,14 @@
     <div class="container" ref="container">
         <div class="card-wrapper" :class="classList" :style="wrapperStyleList" ref="wrapper" v-if="!answered">
             <div class="card" :style="cardStyleList" ref="card" @click="handleClick()">
-                <p class="points">{{ question.points }}</p>
+                <p class="points">{{ points }}</p>
                 <p class="question">
                     {{ question.question }}
-                    <span class="meta">{{ question.points }}</span>
+                    <span class="meta">{{ points }}</span>
                 </p>
                 <p class="answer">
                     {{ question.answer }}
-                    <span class="meta">{{ question.points }}</span>
+                    <span class="meta">{{ points }}</span>
                 </p>
             </div>
         </div>
@@ -19,7 +19,8 @@
 <script>
 export default {
     props: {
-        question: Object
+        question: Object,
+        index: Number
     },
 
     emits: ["answered"],
@@ -39,6 +40,9 @@ export default {
     computed: {
         classList() {
             return this.state
+        },
+        points() {
+            return 100 * (this.index + 1)
         }
     },
 
@@ -116,6 +120,8 @@ export default {
     justify-content: stretch;
     align-items: stretch;
     padding: 1vw;
+    outline: 2px dotted white;
+    max-width: unset;
 }
 
 .card-wrapper {
