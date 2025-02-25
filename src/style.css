@@ -27,7 +27,7 @@ body {
 }
 
 .categories li {
-    flex: 1 1 auto;
+    flex: 1 1 100%;
 }
 
 .category > h2,
@@ -41,7 +41,8 @@ body {
 }
 
 .category > h2 {
-    font-size: 3vw;
+    font-size: 2vw;
+    line-height: 1.25;
     border: 2px solid var(--color-slate-950);
 }
 

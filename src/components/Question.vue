@@ -3,8 +3,14 @@
         <div class="card-wrapper" :class="classList" :style="wrapperStyleList" ref="wrapper" v-if="!answered">
             <div class="card" :style="cardStyleList" ref="card" @click="handleClick()">
                 <p class="points">{{ question.points }}</p>
-                <p class="question">{{ question.question }}</p>
-                <p class="answer">{{ question.answer }}</p>
+                <p class="question">
+                    {{ question.question }}
+                    <span class="meta">{{ question.points }}</span>
+                </p>
+                <p class="answer">
+                    {{ question.answer }}
+                    <span class="meta">{{ question.points }}</span>
+                </p>
             </div>
         </div>
     </div>
@@ -92,11 +98,6 @@ export default {
         const width = container.width * this.scaleUp
         const top = container.top - wrapper.height / 2 + container.height / 2
         const left = container.left - width / 2 + container.width / 2
-        console.log(left)
-        // 100 * 0.16 = 16
-        // 16666666 * 6.000075 =
-
-        console.log(left)
 
         this.wrapperStyleList = {
             top: `${top}px`,
@@ -150,7 +151,7 @@ export default {
 
 .card {
     position: absolute;
-    inset: 80px;
+    inset: 4vw;
 
     display: flex;
     justify-content: stretch;
@@ -236,5 +237,14 @@ export default {
 .card-wrapper.close .answer,
 .card-wrapper.show-answer .answer {
     opacity: 1;
+}
+
+.card .meta {
+    position: absolute;
+    bottom: 4vw;
+    right: 0;
+    left: 0;
+
+    font-size: 2vw;
 }
 </style>
