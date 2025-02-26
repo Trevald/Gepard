@@ -5,6 +5,7 @@
                 <button type="button" class="button" @click="createNew($event)">Ny</button>
                 <input type="file" id="fileinput" @change="fileChange($event)" />
                 <label class="button" for="fileinput">Öppna...</label>
+                <button type="button" class="button" @click="setMode('view')">Spela</button>
                 <template v-if="document">
                     <button v-if="mode !== 'edit'" type="button" class="button" @click="setMode('edit')">Ändra</button>
                     <button v-if="mode === 'edit'" type="button" class="button primary" @click="downloadFile($event)">
@@ -31,6 +32,7 @@
                         :mode="mode"
                         @change-title="changeCategoryTitle($event, index)"
                         @change-question="changeQuestion($event, index)"
+                        @delete-category="deleteCategory($event, index)"
                     />
                 </li>
             </ul>
@@ -76,6 +78,10 @@ export default {
         changeQuestion(value, index) {
             this.document.categories[index].questions[value.index].question = value.question
             this.document.categories[index].questions[value.index].answer = value.answer
+        },
+
+        deleteCategory(index) {
+            this.document.categories.splice(index, 1)
         },
 
         fileChange(event) {

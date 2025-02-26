@@ -140,3 +140,8 @@ body {
 .button.secondary:hover {
     background-color: var(--color-slate-600);
 }
+
+.button.small {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+}

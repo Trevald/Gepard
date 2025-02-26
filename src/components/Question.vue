@@ -120,7 +120,6 @@ export default {
     justify-content: stretch;
     align-items: stretch;
     padding: 1vw;
-    outline: 2px dotted white;
     max-width: unset;
 }
 

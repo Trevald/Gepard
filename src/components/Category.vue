@@ -1,5 +1,8 @@
 <template>
     <div class="category">
+        <button v-if="mode === 'edit'" type="button" class="button delete small" @click="deleteCategory()">
+            Ta bort
+        </button>
         <input v-if="mode === 'edit'" type="text" v-model="title" @input="changeTitle($event)" class="title" />
         <h2 v-else class="title">{{ category.name }}</h2>
         <ul>
@@ -21,7 +24,7 @@ export default {
         QuestionEdit
     },
 
-    emits: ["changeTitle", "changeQuestion"],
+    emits: ["changeTitle", "changeQuestion", "deleteCategory"],
 
     props: {
         category: Object,
@@ -58,7 +61,23 @@ export default {
                 question: data.question,
                 answer: data.answer
             })
+        },
+
+        deleteCategory() {
+            this.$emit("deleteCategory")
         }
     }
 }
 </script>
+
+<style scoped>
+.category {
+    position: relative;
+}
+
+.button.delete {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+}
+</style>
