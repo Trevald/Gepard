@@ -5,7 +5,9 @@
                 <button type="button" class="button" @click="createNew($event)">Ny</button>
                 <input type="file" id="fileinput" @change="fileChange($event)" />
                 <label class="button" for="fileinput">Öppna...</label>
-                <button type="button" class="button" @click="setMode('view')">Spela</button>
+                <button v-if="!gameHasStarted" type="button" class="button" @click="setMode('view')">Spela</button>
+                <button v-if="gameHasStarted" type="button" class="button" @click="restart()">Börja om</button>
+
                 <template v-if="document">
                     <button v-if="mode !== 'edit'" type="button" class="button" @click="setMode('edit')">Ändra</button>
                     <button v-if="mode === 'edit'" type="button" class="button primary" @click="downloadFile($event)">
@@ -13,15 +15,16 @@
                     </button>
                 </template>
             </div>
-            <div class="group">
-                <button
-                    v-if="this.document && mode === 'edit'"
-                    type="button"
-                    class="button secondary"
-                    @click="newCategory()"
-                >
-                    Ny kategori
-                </button>
+            <div class="group" v-if="this.document && mode === 'edit'">
+                <input
+                    type="text"
+                    class="block w-48 rounded-sm bg-slate-800 px-3 py-2 text-base text-gray-50 outline-1 -outline-offset-1 outline-slate-700 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    style="padding: 4px 8px"
+                    v-model="document.title"
+                    @input="changeTitle($event)"
+                    placegholder="Namn"
+                />
+                <button type="button" class="button secondary" @click="newCategory()">Ny kategori</button>
             </div>
         </div>
         <div v-if="document" :class="classList">
@@ -33,6 +36,7 @@
                         @change-title="changeCategoryTitle($event, index)"
                         @change-question="changeQuestion($event, index)"
                         @delete-category="deleteCategory($event, index)"
+                        @question-answered="questionAnswered($event, index)"
                     />
                 </li>
             </ul>
@@ -65,12 +69,34 @@ export default {
         classList() {
             return `mode-${this.mode}`
         },
+
+        gameHasStarted() {
+            if (!this.document) {
+                return false
+            }
+
+            for (const category of this.document.categories) {
+                for (const question of category.questions) {
+                    if (question.answered === true) {
+                        return true
+                    }
+                }
+            }
+
+            return false
+        },
+
         showMenu() {
             return this._showMenu || !this.document
         }
     },
 
     methods: {
+        changeTitle(event) {
+            this.document.title = event.target.value
+            this.cacheCurrentFile()
+        },
+
         changeCategoryTitle(value, index) {
             this.document.categories[index].name = value
             this.cacheCurrentFile()
@@ -85,6 +111,23 @@ export default {
         deleteCategory(index) {
             this.document.categories.splice(index, 1)
             this.cacheCurrentFile()
+        },
+
+        questionAnswered(value, index) {
+            this.document.categories[index].questions[value].answered = true
+            this.cacheCurrentFile()
+        },
+
+        restart() {
+            for (let i = 0; i < this.document.categories.length; i++) {
+                for (let j = 0; j < this.document.categories[i].questions.length; j++) {
+                    this.document.categories[i].questions[j].answered = undefined
+                }
+            }
+
+            this._showMenu = false
+            this.cacheCurrentFile()
+            window.location.reload()
         },
 
         fileChange(event) {
@@ -122,6 +165,7 @@ export default {
         },
 
         downloadFile() {
+            this.restart()
             const textToSave = stringify(this.document, {
                 merge: false,
                 uniqueKeys: false,
@@ -131,7 +175,7 @@ export default {
             const hiddenElement = document.createElement("a")
             hiddenElement.href = "data:attachment/text," + encodeURI(textToSave)
             hiddenElement.target = "_blank"
-            hiddenElement.download = "untitled.yaml"
+            hiddenElement.download = this.document.title ? this.document.title + ".yaml" : "untitled.yaml"
             hiddenElement.click()
             this._showMenu = false
         },

@@ -89,6 +89,7 @@ body {
 
 .menu .group {
     display: flex;
+    align-items: center;
     gap: 1rem;
 }
 
@@ -117,6 +118,7 @@ body {
     color: var(--color-blue-600);
     cursor: pointer;
     transition: all 250ms ease;
+    white-space: nowrap;
 }
 
 .button:hover {

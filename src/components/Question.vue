@@ -27,7 +27,6 @@ export default {
 
     data() {
         return {
-            answered: false,
             scaleUp: 1,
             scaleDown: 1,
             show: false,
@@ -37,7 +36,17 @@ export default {
         }
     },
 
+    watch: {
+        question() {
+            console.log("question")
+        }
+    },
+
     computed: {
+        answered() {
+            return this.question.answered === true
+        },
+
         classList() {
             return this.state
         },
@@ -69,7 +78,7 @@ export default {
             this.state = "close"
 
             setTimeout(() => {
-                this.answered = true
+                this.$emit("answered")
             }, 500)
         },
 
@@ -92,6 +101,9 @@ export default {
     },
 
     mounted() {
+        if (!this.$refs.wrapper) {
+            return
+        }
         const container = this.$refs.container.getBoundingClientRect()
         const wrapper = this.$refs.wrapper.getBoundingClientRect()
         const card = this.$refs.card.getBoundingClientRect()

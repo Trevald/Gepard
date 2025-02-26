@@ -8,7 +8,7 @@
         <ul>
             <li v-for="(question, index) in questions">
                 <QuestionEdit v-if="mode === 'edit'" :question="question" @change="changeQuestion($event, index)" />
-                <Question v-else :question="question" :index="index" />
+                <Question v-else :question="question" :index="index" @answered="questionAnswered(index)" />
             </li>
         </ul>
     </div>
@@ -24,7 +24,7 @@ export default {
         QuestionEdit
     },
 
-    emits: ["changeTitle", "changeQuestion", "deleteCategory"],
+    emits: ["changeTitle", "changeQuestion", "deleteCategory", "questionAnswered"],
 
     props: {
         category: Object,
@@ -65,6 +65,10 @@ export default {
 
         deleteCategory() {
             this.$emit("deleteCategory")
+        },
+
+        questionAnswered(index) {
+            this.$emit("questionAnswered", index)
         }
     }
 }
