@@ -73,15 +73,18 @@ export default {
     methods: {
         changeCategoryTitle(value, index) {
             this.document.categories[index].name = value
+            this.cacheCurrentFile()
         },
 
         changeQuestion(value, index) {
             this.document.categories[index].questions[value.index].question = value.question
             this.document.categories[index].questions[value.index].answer = value.answer
+            this.cacheCurrentFile()
         },
 
         deleteCategory(index) {
             this.document.categories.splice(index, 1)
+            this.cacheCurrentFile()
         },
 
         fileChange(event) {
@@ -111,6 +114,10 @@ export default {
                 }
             }
             this.document = yaml
+            this.cacheCurrentFile()
+        },
+
+        cacheCurrentFile() {
             window.localStorage.setItem("document", JSON.stringify(this.document))
         },
 
@@ -157,19 +164,8 @@ export default {
                 name,
                 questions
             })
-        },
 
-        async loadFirst() {
-            const response = await fetch("/data/1.yaml")
-            const data = await response.text()
-            const yaml = parse(data)
-
-            for (const category of yaml.categories) {
-                for (let i = 0; i < category.questions.length; i++) {
-                    category.questions[i].points = (i + 1) * 100 * this.level
-                }
-            }
-            this.categories = yaml.categories
+            this.cacheCurrentFile()
         }
     },
 
