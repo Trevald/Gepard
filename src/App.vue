@@ -5,7 +5,9 @@
                 <button type="button" class="button" @click="createNew($event)">Ny</button>
                 <input type="file" id="fileinput" @change="fileChange($event)" />
                 <label class="button" for="fileinput">Öppna...</label>
-                <button v-if="!gameHasStarted" type="button" class="button" @click="setMode('view')">Spela</button>
+                <button v-if="!gameHasStarted && document" type="button" class="button" @click="setMode('view')">
+                    Spela
+                </button>
                 <button v-if="gameHasStarted" type="button" class="button" @click="restart()">Börja om</button>
 
                 <template v-if="document">
